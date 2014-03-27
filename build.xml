@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="Dataset" name="Create Runnable Jar for Project datasetPlugin">
+	
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="datasetPlugin">
+    	<mkdir dir="jars" />
+        <jar destfile="./jars/datasetPlugin.jar" filesetmanifest="mergewithoutmain">
+            <fileset dir="bin">
+            	<exclude name="**/test/**" />
+            	<exclude name="*/test/*.class" />
+            	<exclude name="**/*.jpg" />
+            	<include name="**/*.class" />
+            	<include name="**/*.js" />
+            	<include name="**/*.txt" />
+            	<include name="plugin.properties" />
+            </fileset>
+        </jar>
+    </target>
+	
+	<target name="Dataset" depends="datasetPlugin">
+		<copy todir="/usr/local/script/plugins">
+		  <fileset dir="./jars/"
+		           includes="datasetPlugin.jar"
+		  />
+		</copy>
+	</target>
+</project>
