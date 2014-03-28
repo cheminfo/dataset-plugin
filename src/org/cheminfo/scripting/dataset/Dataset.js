@@ -884,7 +884,7 @@ Dataset.DataCollection.prototype.removeSample = function(sample) {
 * 
 * @param	version:string		The version of the data to use
 * @param	similarityFunction	Either a custom function or the name of a predefined function from DM.Similarity or DM.Distance
-* @param	options:+Object		Options for the comparator (Distance.getComparator)
+* @param	options:+Object		Options for the comparator (DM.Comparator)
 * 
 * @return	+Matrix
 * 
@@ -1190,7 +1190,7 @@ Dataset.DataCollection.prototype.pca2 = function(version, options) {
 * Performs a Hierarchical clustering on the given version
 * 
 * @param	version:string		Version of the data
-* @param	DistanceFunction	Either a custom function or the name of a predefined function (default : DistanceFunction.EUCLIDEAN)
+* @param	DistanceFunction	Either a custom function or the name of a predefined function
 * @param	options:+Object		Object containing the options
 * 
 * @option	image	Version of the data that contains a displayable image for the nodes
