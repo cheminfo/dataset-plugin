@@ -892,15 +892,27 @@ Dataset.DataCollection.prototype.removeSample = function(sample) {
 **/
 Dataset.DataCollection.prototype.getSimilarityMatrix = function(version, similarityFunction, options) {
 	console.info("Starting Dataset.getSimilarityMatrix...");
-	var comparator=false;
+	
+	options = options || {};
+	
+	var comparator;
 	if(typeof similarityFunction == "string") {
-		options = options ? options : {};
 		comparator = new DM.Comparator(similarityFunction, options);
 	}
 	else if(typeof similarityFunction == "function") {
 		comparator={compare:similarityFunction, getMap:function(a){return a;}}; // Simulate comparator object
 	}
 	else throw "similarityFunction must be a function";
+	
+	var filter;
+	if(options.filter) {
+		filter = new DM.Filter(options.filter, options);
+	}
+	else {
+		filter = {
+			apply: function(a){return a;}
+		};
+	}
 	
 	var dataType = this.getDataType(version);
 	switch(dataType) {
@@ -911,7 +923,7 @@ Dataset.DataCollection.prototype.getSimilarityMatrix = function(version, similar
 		break;*/
 	case "array":
 		var load = function(file) {
-			var fileContent=File.loadJSON(file);
+			var fileContent=filter.apply(File.loadJSON(file));
 			return comparator.getMap(fileContent);
 		};
 		break;
@@ -1258,6 +1270,18 @@ Dataset.DataCollection.prototype.getBatches = function(){
 			index++;
 		}
 	}
+};
+
+Dataset.DataCollection.prototype.getDescriptors = function() {
+	var l = this.data.length;
+	var descriptors = new Array(l);
+	for(var i = 0; i < l; i++) {
+		descriptors[i] = {
+				color: this.data[i].color,
+				label: this.data[i].id
+		};
+	}
+	return descriptors;
 };
 
 /**
