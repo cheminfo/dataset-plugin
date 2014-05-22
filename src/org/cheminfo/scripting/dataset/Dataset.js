@@ -586,7 +586,7 @@ var Dataset = {
 				break;
 			case "getArray":
 				var nbPoints = options.nbPoints || 	spectrum.getNbPoints();
-				var array = spectrum.getEquallySpacedDataInt(from,to,nbPoints);
+				var array = spectrum.getVector(from,to,nbPoints);
 				newPath = newPath.replace(/\.[a-zA-Z]+$/,".array");
 				File.saveJSON(newPath,array);
 				data[i]["data"][newSubDirectory]={filename: newPath, viewFile: Visualizer.getTypedURL(newPath)};
