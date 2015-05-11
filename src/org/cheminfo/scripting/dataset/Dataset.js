@@ -6,22 +6,10 @@ var Dataset;
 
 (function(){
 
-var sizeLimit = 500;
-
 Dataset = {
 		
 	toJSON: function() {
 		return "Dataset plugin";
-	},
-	
-	setSizeLimit: function(newLimit) {
-		if (typeof newLimit !== 'number') {
-			throw new TypeError('newLimit must be a number');
-		}
-		if (newLimit < 0) {
-			throw new RangeError('newLimit must be greater than or equal to zero');
-		}
-		sizeLimit = newLimit;
 	},
 
     /**
@@ -149,6 +137,7 @@ Dataset = {
 	* @option	delimiter	If option metadata is specified : Field separator
 	* @option	uniqueColumnName	If option metadata is specified : Name of the column that contains the unique keys (default: "name")
 	* @option	metanameFilter	If option metadata is specified : Function to parse the unique name field to match with the parsed filename (default: function(name){return name;})
+	* @option	metanameMatch	If option metadata is specified : Function that is called with unique name and meta name and must return true if they match
 	* @option	batchDescription	Object that explains how to identify the batch or category. Default: {source:"filename", modifier: function(name){return name.replace(/_(.*)/,"");}}. Possible sources: filename, metadata. If source is metadata, a column property is needed.
 	* 
 	* @return	+Dataset
@@ -206,11 +195,9 @@ Dataset = {
 					}
 				}
 			};
-			var parsedMetadata = File.parse(options.metadata,{delimiter:options.delimiter, modifier:modifier});
-			for(var i=0; i<parsedMetadata.length; i++) {
-				metadata[parsedMetadata[i]._id]=parsedMetadata[i];
-			}
+			metadata = File.parse(options.metadata,{delimiter:options.delimiter, modifier:modifier});
 		}
+		var metanameMatch = options.metanameMatch || function(name, metaname){return name === metaname;};
 		
 		console.info("Treatment of the filenameFilter option");
 		var filenameFilter = options.filenameFilter || function(name) {
@@ -223,7 +210,7 @@ Dataset = {
 			}
 		};
 		if(typeof filenameFilter != "function") {
-			throw "Option filenameFilter must be a function";
+			throw new TypeError("Option filenameFilter must be a function");
 		}
 		
 		console.info("Treatment of the limit/subSet options");
@@ -236,7 +223,7 @@ Dataset = {
 		}
 
 		var limit=20;
-		if((options.limit != undefined) && (typeof options.limit == "number") && (options.limit > -1)) {
+		if((typeof options.limit == "number") && (options.limit > -1)) {
 			limit = options.limit;
 		}
 		
@@ -257,11 +244,6 @@ Dataset = {
 			
 			if(files.length==0) throw "Directory "+source+"/"+version[i]+" is empty or does not exist";
 			if(limit > 0) files=files.slice(0,limit);
-			if(i == 0 && files.length > sizeLimit) {
-				console.warn("You may not load more than "+sizeLimit+" files. The dataset was reduced to the "+sizeLimit+" first " +
-						"files present in the folder","Dataset.load");
-				files=files.slice(0,sizeLimit);
-			}	
 			folders[version[i]]=files;
 		}
 
@@ -299,7 +281,15 @@ Dataset = {
 						viewFile: Visualizer.getTypedURL(folders[version2][i])
 				};
 			}
-			element.metadata = metadata[element.name] || {};
+			for (var j = 0; j < metadata.length; j++) {
+				if (metanameMatch(element.name, metadata[j]._id)) {
+					element.metadata = metadata[j];
+					break;
+				}
+			}
+			if (!element.metadata) {
+				element.metadata = {};
+			}
 			
 			if(batchDescription.source=="filename")
 				element.batchID=batchDescription.modifier(element.id);
