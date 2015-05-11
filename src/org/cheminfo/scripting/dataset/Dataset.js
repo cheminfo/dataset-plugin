@@ -534,9 +534,12 @@ Dataset = {
 			var newPath = newDirectory+"/"+filename;
 			
 			var spectrum=SD.load(initialPath);
+			
+			var specMin = Math.min(spectrum.getFirstX(),spectrum.getLastX());
+			van specMax = Math.max(spectrum.getFirstX(),spectrum.getLastX());
 
-			var from = options.from || Math.min(spectrum.getFirstX(),spectrum.getLastX());
-			var to = options.to || Math.max(spectrum.getFirstX(),spectrum.getLastX());
+			var from = options.from || specMin;
+			var to = options.to || specMax;
 			
 			switch(method){
 			case "filter":
@@ -584,6 +587,11 @@ Dataset = {
 					spectrum.suppressZone(from,to);
 				else
 					spectrum.fillWith(from,to,value);
+				saveEntry(data, spectrum, newPath, newSubDirectory);
+				break;
+			case "select":
+				spectrum.suppressZone(specMin, from);
+				spectrum.suppressZone(to, specMax);
 				saveEntry(data, spectrum, newPath, newSubDirectory);
 				break;
 			case "getArray":
@@ -833,6 +841,24 @@ Dataset.DataCollection.prototype.spectrumCorrelation = function(version, destina
 **/
 Dataset.DataCollection.prototype.spectrumFillRegion = function(version, destination, options) {
 	Dataset.processSpectrum(this, "fill", arguments);
+};
+
+/**
+* @function	spectrumSelectRegion(version, destination, options)
+* Allows to extract a region of the spectra
+* 
+* @param	version:string			Version of the data to process
+* @param	destination:string		Destination of the processed result
+* @param	options:+Object			Object containing the options
+* 
+* @option	from	Start of the region (default : lowest x)
+* @option	to	End of the region (default : highest x)
+* @option	overwrite	Overwrite the destination folder if it already exists (default: false)
+* 
+* @example	dataset1.spectrumSelectRegion("snv", "selected", {from:800, to:1800})
+**/
+Dataset.DataCollection.prototype.spectrumFillRegion = function(version, destination, options) {
+	Dataset.processSpectrum(this, "select", arguments);
 };
 
 /**
