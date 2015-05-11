@@ -2,15 +2,27 @@
  * @object Dataset
  * Library that allows to load datasets and apply functions on the whole data.
  **/
+var Dataset;
 
-var Dataset = {
+(function(){
+
+var sizeLimit = 500;
+
+Dataset = {
 		
 	toJSON: function() {
 		return "Dataset plugin";
 	},
-		
-	// Initialization of global variables
-	sizeLimit: 300,
+	
+	setSizeLimit: function(newLimit) {
+		if (typeof newLimit !== 'number') {
+			throw new TypeError('newLimit must be a number');
+		}
+		if (newLimit < 0) {
+			throw new RangeError('newLimit must be greater than or equal to zero');
+		}
+		sizeLimit = newLimit;
+	},
 
     /**
     * 
@@ -245,10 +257,10 @@ var Dataset = {
 			
 			if(files.length==0) throw "Directory "+source+"/"+version[i]+" is empty or does not exist";
 			if(limit > 0) files=files.slice(0,limit);
-			if(i == 0 && files.length > Dataset.sizeLimit) {
-				console.warn("You may not load more than "+Dataset.sizeLimit+" files. The dataset was reduced to the "+Dataset.sizeLimit+" first " +
+			if(i == 0 && files.length > sizeLimit) {
+				console.warn("You may not load more than "+sizeLimit+" files. The dataset was reduced to the "+sizeLimit+" first " +
 						"files present in the folder","Dataset.load");
-				files=files.slice(0,Dataset.sizeLimit);
+				files=files.slice(0,sizeLimit);
 			}	
 			folders[version[i]]=files;
 		}
@@ -1375,3 +1387,5 @@ Dataset.IJFilter = {
 	 */
 	EDGE:6
 };
+
+})();
