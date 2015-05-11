@@ -536,7 +536,7 @@ Dataset = {
 			var spectrum=SD.load(initialPath);
 			
 			var specMin = Math.min(spectrum.getFirstX(),spectrum.getLastX());
-			van specMax = Math.max(spectrum.getFirstX(),spectrum.getLastX());
+			var specMax = Math.max(spectrum.getFirstX(),spectrum.getLastX());
 
 			var from = options.from || specMin;
 			var to = options.to || specMax;
