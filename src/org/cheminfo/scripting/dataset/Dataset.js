@@ -512,7 +512,7 @@ var Dataset = (function () {
      *
      * @example    dataset1.spectrumFilter('original', 'snv', Dataset.SDFilter.SNV)
      **/
-    Dataset.DataCollection.prototype.spectrumFilter = function (version, destination, filterFunction, options) {
+    DataCollection.prototype.spectrumFilter = function (version, destination, filterFunction, options) {
         processSpectrum.call(this, 'filter', arguments);
     };
 
