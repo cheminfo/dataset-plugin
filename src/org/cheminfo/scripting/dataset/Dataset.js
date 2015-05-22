@@ -219,7 +219,7 @@ var Dataset = (function () {
         var subSet = '';
         if (options.subSet) {
             if ((typeof options.subSet != 'string') && !(options.subSet instanceof RegExp))
-                throw new Error(new Error('subSet option must be a string or a regular expression'));
+                throw new Error('subSet option must be a string or a regular expression');
             else
                 subSet = options.subSet;
         }
@@ -240,7 +240,7 @@ var Dataset = (function () {
         }
 
         if (batchDescription.source === 'metadata' && (typeof batchDescription.column !== 'string'))
-            throw new Error(new Error('Missing column property in the batchDescription object'));
+            throw new Error('Missing column property in the batchDescription object');
 
         /* ********************************** */
         /* ************** CODE ************** */
@@ -646,7 +646,7 @@ var Dataset = (function () {
                 }
             }; // Simulate comparator object
         }
-        else throw new Error(new Error('similarityFunction must be a function'));
+        else throw new Error('similarityFunction must be a function');
 
         var filter;
         if (options.filter) {
@@ -815,7 +815,7 @@ var Dataset = (function () {
     DataCollection.prototype.pca = function (version, options) {
         console.info('Starting Dataset.pca...');
 
-        if (this.getDataType(version) != 'array') throw new Error(new Error('PCA can only be applied on arrays'));
+        if (this.getDataType(version) != 'array') throw new Error('PCA can only be applied on arrays');
         options = options ? options : {};
         var nPC = options.nPC || 2;
 
@@ -1098,9 +1098,9 @@ var Dataset = (function () {
         }
 
         var allowedChars = /^[a-zA-Z0-9-]+$/;
-        if (!allowedChars.test(destination)) throw new Error(new Error('The destination name contains forbidden characters. Allowed characters are : a-z, A-z, 0-9 and -'));
+        if (!allowedChars.test(destination)) throw new Error('The destination name contains forbidden characters. Allowed characters are : a-z, A-z, 0-9 and -');
         if (!data[0]['data'][version]) throw new Error('The specified version (' + version + ') is not loaded or does not exist');
-        if (this.getDataType(version) != 'image') throw new Error(new Error('This function can only be used on images'));
+        if (this.getDataType(version) != 'image') throw new Error('This function can only be used on images');
 
         var saveEntry = function (data, image, newPath, newVersion) {
             newPath = newPath.replace(/\.[a-zA-Z0-9]+$/, '.png');
@@ -1198,7 +1198,7 @@ var Dataset = (function () {
                         image.edge();
                         saveEntry(data, image, newPath, newSubDirectory);
                     }
-                    else throw new Error(new Error('The requested filter does not exist'));
+                    else throw new Error('The requested filter does not exist');
                     break;
                 case 'histogram':
                     var histogram = image.histogram();
@@ -1247,9 +1247,9 @@ var Dataset = (function () {
             options = processOption || {};
 
         var allowedChars = /^[a-zA-Z0-9-]+$/;
-        if (!allowedChars.test(destination)) throw new Error(new Error('The destination name contains forbidden characters. Allowed characters are : a-z, A-z, 0-9 and -'));
+        if (!allowedChars.test(destination)) throw new Error('The destination name contains forbidden characters. Allowed characters are : a-z, A-z, 0-9 and -');
         if (!data[0]['data'][version]) throw new Error('The specified version (' + version + ') is not loaded or does not exist');
-        if (this.getDataType(version) != 'spectrum') throw new Error(new Error('This function can only be used on spectra'));
+        if (this.getDataType(version) != 'spectrum') throw new Error('This function can only be used on spectra');
 
         var saveEntry = function (data, spectrum, newPath, newVersion) {
             spectrum.save(newPath);
@@ -1333,10 +1333,10 @@ var Dataset = (function () {
                         spectrum.correlationFilter([-1, 1]);
                         saveEntry(data, spectrum, newPath, newSubDirectory);
                     }
-                    else throw new Error(new Error('The requested filter does not exist'));
+                    else throw new Error('The requested filter does not exist');
                     break;
                 case 'correlation':
-                    if (!(processOption instanceof Array)) throw new Error(new Error('The correlation option has to be an array of numbers'));
+                    if (!(processOption instanceof Array)) throw new Error('The correlation option has to be an array of numbers');
                     spectrum.correlationFilter(processOption);
                     saveEntry(data, spectrum, newPath, newSubDirectory);
                     break;
