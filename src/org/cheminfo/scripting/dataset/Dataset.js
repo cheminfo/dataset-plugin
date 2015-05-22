@@ -1005,7 +1005,7 @@ var Dataset = (function () {
 
     /**
      * @function    getBatchList()
-     * Returns an array of the different batches including their name and color
+     * Returns an array of the different batches including their name and color and number of elements
      * @returns +Array
      */
     DataCollection.prototype.getBatchList = function () {
@@ -1015,7 +1015,8 @@ var Dataset = (function () {
             for (var i = 0; i < names.length; i++) {
                 result[i] = {
                     name: names[i],
-                    color: this.batches[names[i]][0].color
+                    color: this.batches[names[i]][0].color,
+                    elements: this.batches[names[i]].length
                 };
             }
             return result;
