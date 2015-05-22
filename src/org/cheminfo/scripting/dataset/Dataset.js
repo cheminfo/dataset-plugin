@@ -229,14 +229,17 @@ var Dataset = (function () {
             limit = options.limit;
         }
 
-        var batchDescription = options.batchDescription || {
-                source: 'filename', modifier: function (name) {
-                    return name.replace(/_(.*)/, '');
-                }
+        var batchDescription = options.batchDescription || {};
+        if (typeof batchDescription.modifier !== 'function') {
+            batchDescription.modifier = function (name) {
+                return name.replace(/_(.*)/, '');
             };
-        if ((typeof batchDescription.source != 'string') || (typeof batchDescription.modifier != 'function'))
-            throw 'batchDescritpion must have the source (string) and modifier (function) properties';
-        if (batchDescription.source == 'metadata' && (typeof batchDescription.column != 'string'))
+        }
+        if (typeof batchDescription.source !== 'string') {
+            batchDescription.source = 'filename';
+        }
+
+        if (batchDescription.source === 'metadata' && (typeof batchDescription.column !== 'string'))
             throw 'Missing column property in the batchDescription object';
 
         /* ********************************** */
