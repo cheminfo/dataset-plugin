@@ -720,16 +720,16 @@ var Dataset = (function () {
                 return name.replace(reg, '');
             };
 
-        var names = [];
-        for (var i = 0; i < this.data.length; i++) {
-            if (metadataField)
-                names.push(this.data[i].metadata[metadataField]);
-            else {
-                var keys = [];
-                for (var k in this.data[i].data) keys.push(k);
-                names.push(this.data[i].data[keys[0]].filename.replace(/.*\/(.*)\.[a-zA-Z0-9]+$/, '$1'));
-            }
+        var dataLength = this.data.length;
 
+        var names = new Array(dataLength);
+        var key = Object.keys(this.data[0].data)[0];
+        for (var i = 0; i < dataLength; i++) {
+            if (metadataField) {
+                names[i] = this.data[i].metadata[metadataField];
+            } else {
+                names[i] = this.data[i].data[key].filename.replace(/.*\/(.*)\.[a-zA-Z0-9]+$/, '$1');
+            }
         }
 
         var sameClass = function (name1, name2) {
@@ -746,8 +746,7 @@ var Dataset = (function () {
         // 1 for a same class and 0 for a different class
         for (var i = 0; i < this.data.length; i++) {
             for (var j = i; j < this.data.length; j++) {
-                target[i][j] = sameClass(names[i], names[j]);
-                target[j][i] = target[i][j];
+                target[i][j] = target[j][i] = sameClass(names[i], names[j]);
             }
         }
         return new Matrix(target);
