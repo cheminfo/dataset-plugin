@@ -1000,6 +1000,27 @@ var Dataset = (function () {
         return tree;
     };
 
+    /**
+     * @function    getBatchList()
+     * Returns an array of the different batches including their name and color
+     * @returns +Array
+     */
+    DataCollection.prototype.getBatchList = function () {
+        if (this.data[0].hasOwnProperty('batchID')) {
+            var names = Object.keys(this.batches);
+            var result = new Array(names.length);
+            for (var i = 0; i < names.length; i++) {
+                result[i] = {
+                    name: names[i],
+                    color: this.batches[names[i]][0].color
+                };
+            }
+            return result;
+        } else {
+            return [];
+        }
+    };
+
     DataCollection.prototype.getBatches = function () {
         if (this.data[0].hasOwnProperty('batchID')) {
             this.batches = {};
