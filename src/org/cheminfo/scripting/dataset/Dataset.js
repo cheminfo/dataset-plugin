@@ -9,7 +9,7 @@ var Dataset;
 Dataset = {
 		
 	toJSON: function() {
-		return "Dataset plugin";
+		return 'Dataset plugin';
 	},
 
     /**
@@ -21,7 +21,7 @@ Dataset = {
     * @param	exportName:string	Name of the exported JSON for the visualizer
     * @param	options:+Object		Object containing the options
     *
-    * @option	uniqueColumnName	Name of the column that contains the unique names in metadata files (default: "name")
+    * @option	uniqueColumnName	Name of the column that contains the unique names in metadata files (default: 'name')
     * @option	metaModifier		Modifier function that is applied to the metadata files. (Default: Creates a batchID column with the first part of the uniqueColumnName column)
     * @option	filenameModifier	Modifier function that is applied to the filenames. (Default: Keeps what's before the first underscore)
     *
@@ -30,11 +30,11 @@ Dataset = {
 	show: function(path, exportName ,options) {
 		
 		options = options ? options : {};
-		var uniqueColumnName = options.uniqueColumnName || "name";
+		var uniqueColumnName = options.uniqueColumnName || 'name';
 		var metaModifier = options.metaModifier || function(entry) {
 			if(entry[uniqueColumnName]) {
 				if(!entry._batchID) {
-					entry._batchID=entry[uniqueColumnName].replace(/_.*/,"");
+					entry._batchID=entry[uniqueColumnName].replace(/_.*/,'');
 				}
 				if(!entry._id) {
 					entry._id=entry[uniqueColumnName];
@@ -42,7 +42,7 @@ Dataset = {
 			}
 		};
 		var filenameModifier = options.filenameModifier || function(filename) {
-			return filename.replace(/_.*$/,"");
+			return filename.replace(/_.*$/,'');
 		};
 
     	var folders=File.dir(path);
@@ -51,18 +51,18 @@ Dataset = {
 		var dataTypes = [];
 
 		for(var i=0; i<folders.length; i++){
-			var dataType=folders[i].replace(/^.*\/(.*)\/$/,"$1");
+			var dataType=folders[i].replace(/^.*\/(.*)\/$/,'$1');
 
 			var dataTypeCount={};
 			dataTypes.push(dataTypeCount);
 			dataTypeCount.name=dataType;
 
-			var files=File.dir(folders[i]+"/original/");
+			var files=File.dir(folders[i]+'/original/');
 			dataTypeCount.nb=files.length;
 
 			for(var j=0; j<files.length; j++){
 				var file=files[j];
-				if (dataType=="metadata") {
+				if (dataType=='metadata') {
 					var entries=File.parse(file,{modifier:metaModifier});
 					for(var k=0; k<entries.length; k++){
 						var entry=entries[k];
@@ -75,7 +75,7 @@ Dataset = {
 					}
 				} else {
 					var entry={};
-					entry.name=file.replace(/.*\//,"");
+					entry.name=file.replace(/.*\//,'');
 					entry.data=Visualizer.getTypedURL(file);
 					var batchID = filenameModifier(entry.name);
 						if (! results[batchID]) results[batchID]={};
@@ -91,8 +91,8 @@ Dataset = {
 			var entry=results[key];
 
 			for(var i=0; i<folders.length; i++){
-				var dataType=folders[i].replace(/^.*\/(.*)\/$/,"$1");
-				var nbDataType="nb"+dataType.substring(0,1).toUpperCase()+dataType.substring(1);
+				var dataType=folders[i].replace(/^.*\/(.*)\/$/,'$1');
+				var nbDataType='nb'+dataType.substring(0,1).toUpperCase()+dataType.substring(1);
 				if (entry[dataType]) {
 					entry[nbDataType]=entry[dataType].length;
 				} else {
@@ -115,10 +115,10 @@ Dataset = {
 	* @return	+Dataset
 	**/
 	load: function(source, filename) {
-		console.info("Loading old dataset");
-		var data=File.loadJSON(source+"/_json/"+filename+".json");
+		console.info('Loading old dataset');
+		var data=File.loadJSON(source+'/_json/'+filename+'.json');
 		var dataset=new Dataset.DataCollection(data.data,data.source);
-		console.info("Dataset loaded with "+dataset.data.length+" elements.");
+		console.info('Dataset loaded with '+dataset.data.length+' elements.');
 		return dataset;
 	},
 
@@ -129,16 +129,16 @@ Dataset = {
 	* @param	source:string	Path to the data folder
 	* @param	options:+Object	Object containing the options
 	*
-	* @option	version	Version(s) of the data to load. Can be : a string (1 version), an array of strings (several versions), an empty array (all versions) or a regular expression (default: "original")
+	* @option	version	Version(s) of the data to load. Can be : a string (1 version), an array of strings (several versions), an empty array (all versions) or a regular expression (default: 'original')
 	* @option	limit	Number of files to load (default: 20 ; 0 to load everything)
 	* @option	subSet	Allows to load a subset of the data, based on a regular expression or a string that will be applied to the filename
 	* @option	filenameFilter	Function to parse the filename into the unique name (default: function(name) { var reg = /^.*_[0-9]+/; return reg.exec(name)[0]; })
 	* @option	metadata	Path to the metadata associated with the analysis (default: none)
 	* @option	delimiter	If option metadata is specified : Field separator
-	* @option	uniqueColumnName	If option metadata is specified : Name of the column that contains the unique keys (default: "name")
+	* @option	uniqueColumnName	If option metadata is specified : Name of the column that contains the unique keys (default: 'name')
 	* @option	metanameFilter	If option metadata is specified : Function to parse the unique name field to match with the parsed filename (default: function(name){return name;})
 	* @option	metanameMatch	If option metadata is specified : Function that is called with unique name and meta name and must return true if they match
-	* @option	batchDescription	Object that explains how to identify the batch or category. Default: {source:"filename", modifier: function(name){return name.replace(/_(.*)/,"");}}. Possible sources: filename, metadata. If source is metadata, a column property is needed.
+	* @option	batchDescription	Object that explains how to identify the batch or category. Default: {source:'filename', modifier: function(name){return name.replace(/_(.*)/,'');}}. Possible sources: filename, metadata. If source is metadata, a column property is needed.
 	* 
 	* @return	+Dataset
 	**/
@@ -150,43 +150,43 @@ Dataset = {
 		
 		options = options ? options : {};
 		
-		console.info("Starting Dataset.load ...");
-		console.info("Treatment of the version option");
-		var version = ["original"];
+		console.info('Starting Dataset.load ...');
+		console.info('Treatment of the version option');
+		var version = ['original'];
 		if(options.version != undefined) {
-			if((typeof options.version) == "string") version=[options.version];
+			if((typeof options.version) == 'string') version=[options.version];
 			else if(options.version instanceof RegExp) {
 				var versions = File.dir(source);
 				var newVersion = [];
 
 				for(var i=0; i<versions.length; i++) {
-					var versionName = versions[i].replace(/^.*\/(.*)\/$/,"$1");
+					var versionName = versions[i].replace(/^.*\/(.*)\/$/,'$1');
 					if(options.version.test(versionName)) {
 						newVersion.push(versionName);
 					}
 				}
 				if(newVersion.length > 0) version=newVersion;
-				else throw "No version found with the RegExp "+options.version.toString();
+				else throw 'No version found with the RegExp '+options.version.toString();
 			}
 			else if((options.version instanceof Array) && (options.version.length == 0)) {
 				var versions = File.dir(source,{filter:/^[^_]{1}.*/});
 				var newVersion = [];
 
 				for(var i=0; i<versions.length; i++) {
-					var versionName = versions[i].replace(/^.*\/(.*)\/$/,"$1");
+					var versionName = versions[i].replace(/^.*\/(.*)\/$/,'$1');
 					newVersion.push(versionName);
 				}
 				version=newVersion;
 			}
-			else if(!(options.version instanceof Array)) throw "Option version should be a string, a regular " +
-					"expression or an array";
+			else if(!(options.version instanceof Array)) throw 'Option version should be a string, a regular ' +
+					'expression or an array';
 			else version = options.version;
 		}
 		
-		console.info("Treatment of the metadata option");
+		console.info('Treatment of the metadata option');
 		var metadata = {};
 		if(options.metadata != undefined) {
-			var uniqueColumnName = options.uniqueColumnName || "name";
+			var uniqueColumnName = options.uniqueColumnName || 'name';
 			var metanameFilter = options.metanameFilter || function(value){return value;};
 			var modifier = function(entry) {
 				if(entry[uniqueColumnName]) {
@@ -199,7 +199,7 @@ Dataset = {
 		}
 		var metanameMatch = options.metanameMatch || function(name, metaname){return name === metaname;};
 		
-		console.info("Treatment of the filenameFilter option");
+		console.info('Treatment of the filenameFilter option');
 		var filenameFilter = options.filenameFilter || function(name) {
 			var reg = /^.*_[0-9]+/;
 			if(reg.test(name)){
@@ -209,60 +209,60 @@ Dataset = {
 				return false;
 			}
 		};
-		if(typeof filenameFilter != "function") {
-			throw new TypeError("Option filenameFilter must be a function");
+		if(typeof filenameFilter != 'function') {
+			throw new TypeError('Option filenameFilter must be a function');
 		}
 		
-		console.info("Treatment of the limit/subSet options");
-		var subSet="";
+		console.info('Treatment of the limit/subSet options');
+		var subSet='';
 		if(options.subSet) {
-			if((typeof options.subSet != "string") && !(options.subSet instanceof RegExp))
-				throw "subSet option must be a string or a regular expression";
+			if((typeof options.subSet != 'string') && !(options.subSet instanceof RegExp))
+				throw 'subSet option must be a string or a regular expression';
 			else
 				subSet = options.subSet;
 		}
 
 		var limit=20;
-		if((typeof options.limit == "number") && (options.limit > -1)) {
+		if((typeof options.limit == 'number') && (options.limit > -1)) {
 			limit = options.limit;
 		}
 		
-		var batchDescription = options.batchDescription || {source:"filename", modifier: function(name){return name.replace(/_(.*)/,"");}};
-		if((typeof batchDescription.source != "string") || (typeof batchDescription.modifier != "function"))
-			throw "batchDescritpion must have the source (string) and modifier (function) properties";
-		if(batchDescription.source == "metadata" && (typeof batchDescription.column != "string"))
-			throw "Missing column property in the batchDescription object";
+		var batchDescription = options.batchDescription || {source:'filename', modifier: function(name){return name.replace(/_(.*)/,'');}};
+		if((typeof batchDescription.source != 'string') || (typeof batchDescription.modifier != 'function'))
+			throw 'batchDescritpion must have the source (string) and modifier (function) properties';
+		if(batchDescription.source == 'metadata' && (typeof batchDescription.column != 'string'))
+			throw 'Missing column property in the batchDescription object';
 
 		/* ********************************** */
 		/* ************** CODE ************** */
 		/* ********************************** */
 		
-		console.info("Loading the versions");
+		console.info('Loading the versions');
 		var folders={};
 		for(var i=0; i<version.length; i++) {
-			var files = File.dir(source+"/"+version[i],{filter:subSet}).sort();
+			var files = File.dir(source+'/'+version[i],{filter:subSet}).sort();
 			
-			if(files.length==0) throw "Directory "+source+"/"+version[i]+" is empty or does not exist";
+			if(files.length==0) throw 'Directory '+source+'/'+version[i]+' is empty or does not exist';
 			if(limit > 0) files=files.slice(0,limit);
 			folders[version[i]]=files;
 		}
 
-		console.info("Checking that each loaded version contains the same data");
+		console.info('Checking that each loaded version contains the same data');
 		var abcReg=/.*\/([^\/]+)\..*/;
 		
 		for(var abc in folders) {
 			if(abc==version[0])
 				continue;
 			if(folders[version[0]].length > folders[abc].length)
-				throw "Problem when loading the data : selected versions ("+version[0]+" & "+abc+") do not contain the same amount of data";
+				throw 'Problem when loading the data : selected versions ('+version[0]+' & '+abc+') do not contain the same amount of data';
 			for(var i=0; i<folders[version[0]].length; i++) {
-				if(folders[version[0]][i].replace(abcReg,"$1") != folders[abc][i].replace(abcReg,"$1"))
-					throw "Problem when loading the data : selected versions ("+version[0]+" & "+abc+") do not contain the same data";
+				if(folders[version[0]][i].replace(abcReg,'$1') != folders[abc][i].replace(abcReg,'$1'))
+					throw 'Problem when loading the data : selected versions ('+version[0]+' & '+abc+') do not contain the same data';
 			}
 		}
 		
 		
-		console.info("Add each element in the data object");
+		console.info('Add each element in the data object');
 		var data=[];
 		var len = folders[version[0]].length;
 		
@@ -271,10 +271,10 @@ Dataset = {
 			var element={};
 			data.push(element);
 			var elementFile = folders[version[0]][i];
-			element.id=elementFile.replace(/.*\/(.*)\.[^\.]*$/,"$1");
+			element.id=elementFile.replace(/.*\/(.*)\.[^\.]*$/,'$1');
 			element.name=filenameFilter(element.id);
 			element.data={};
-			element.color="#000000";
+			element.color='#000000';
 			for(var version2 in folders) {
 				element.data[version2] = {
 						filename: folders[version2][i],
@@ -291,14 +291,14 @@ Dataset = {
 				element.metadata = {};
 			}
 			
-			if(batchDescription.source=="filename")
+			if(batchDescription.source=='filename')
 				element.batchID=batchDescription.modifier(element.id);
-			else if(batchDescription.source=="metadata" && element.metadata[batchDescription.column])
+			else if(batchDescription.source=='metadata' && element.metadata[batchDescription.column])
 				element.batchID=batchDescription.modifier(element.metadata[batchDescription.column]);
 			
 		}
 		
-		console.info("... end of Dataset.loadData");
+		console.info('... end of Dataset.loadData');
 		return new Dataset.DataCollection(data,source);
 		
 	},
@@ -313,7 +313,7 @@ Dataset = {
 	
 	processImage: function(dataCollection,method,parameters) {
 		
-		console.info("Starting Dataset.processImage (method: "+method+") ...");
+		console.info('Starting Dataset.processImage (method: '+method+') ...');
 		
 		var data = dataCollection.data;
 		var version=parameters[0];
@@ -321,17 +321,17 @@ Dataset = {
 		var processOption=parameters[2];
 		var options=parameters[3] || {};
 		
-		if(method=="histogram"||method=="crop")
+		if(method=='histogram'||method=='crop')
 			options=processOption || {};
 		
-		var maskOptions = {imageFilter:"red"}, roisOptions = {};
-		if(method=="split"){
+		var maskOptions = {imageFilter:'red'}, roisOptions = {};
+		if(method=='split'){
 			var transparent = options.transparent ? true : false;
-			if(typeof options.darkBackground == "boolean"){
+			if(typeof options.darkBackground == 'boolean'){
 				if(options.darkBackground) maskOptions.darkBackground = true;
 				else maskOptions.darkBackground = false;
 			}
-			if(processOption!="none") maskOptions.imageFilter = processOption;
+			if(processOption!='none') maskOptions.imageFilter = processOption;
 			if(options.maskColor) maskOptions.maskColor = options.maskColor;
 			if(options.method) maskOptions.method = options.method;
 			
@@ -350,85 +350,85 @@ Dataset = {
 		}
 		
 		var allowedChars = /^[a-zA-Z0-9-]+$/;
-		if(!allowedChars.test(destination)) throw "The destination name contains forbidden characters. Allowed characters are : a-z, A-z, 0-9 and -";
-		if(!data[0]["data"][version]) throw "The specified version ("+version+") is not loaded or does not exist";
-		if(dataCollection.getDataType(version) != "image") throw "This function can only be used on images";
+		if(!allowedChars.test(destination)) throw 'The destination name contains forbidden characters. Allowed characters are : a-z, A-z, 0-9 and -';
+		if(!data[0]['data'][version]) throw 'The specified version ('+version+') is not loaded or does not exist';
+		if(dataCollection.getDataType(version) != 'image') throw 'This function can only be used on images';
 		
 		var saveEntry = function(data, image, newPath, newVersion){
-			newPath=newPath.replace(/\.[a-zA-Z0-9]+$/,".png");
+			newPath=newPath.replace(/\.[a-zA-Z0-9]+$/,'.png');
 			image.save(newPath);
-			data[i]["data"][newVersion]={filename: newPath, viewFile: Visualizer.getTypedURL(newPath), histogram: image.histogram()};
+			data[i]['data'][newVersion]={filename: newPath, viewFile: Visualizer.getTypedURL(newPath), histogram: image.histogram()};
 		};
 		
-		console.info("Treatment of the folder names");
+		console.info('Treatment of the folder names');
 		
-		var initialDirectory=data[0]["data"][version]["filename"].replace(/\/[^\/]+$/,"");
-		var initialSubDirectory=initialDirectory.replace(/.*\//,"");
+		var initialDirectory=data[0]['data'][version]['filename'].replace(/\/[^\/]+$/,'');
+		var initialSubDirectory=initialDirectory.replace(/.*\//,'');
 		
-		var newSubDirectory="error";
-		if(initialSubDirectory=="original")
+		var newSubDirectory='error';
+		if(initialSubDirectory=='original')
 			newSubDirectory=destination;
 		else
-			newSubDirectory=initialSubDirectory+"_"+destination;
+			newSubDirectory=initialSubDirectory+'_'+destination;
 		
 		var newDirectory = initialDirectory.replace(/[^\/]+$/,newSubDirectory);
 		
-		var subNames=[""];
-		if(method=="filter") {
+		var subNames=[''];
+		if(method=='filter') {
 			if (processOption==Dataset.IJFilter.RGB)
-				subNames=["Red","Green","Blue"];
+				subNames=['Red','Green','Blue'];
 			else if(processOption==Dataset.IJFilter.HSB)
-				subNames=["Hue","Saturation","Brightness"];
+				subNames=['Hue','Saturation','Brightness'];
 		}
 		
 		for(var i=0; i<subNames.length; i++) {
 			if(File.exists(newDirectory+subNames[i])==2) {
 				if(!options.overwrite)
-					throw ("The directory "+newSubDirectory+subNames[i]+" already exists. Choose another name or " +
-							"make the overwrite option true.");
+					throw ('The directory '+newSubDirectory+subNames[i]+' already exists. Choose another name or ' +
+							'make the overwrite option true.');
 				else {
 					var folderContent = File.dir(newDirectory+subNames[i]);
 					for(var j=0; j<folderContent.length; j++) {
 						File.remove(folderContent[j]);
 					}
 					File.remove(newDirectory+subNames[i]);
-					console.warn("The content of directory "+newSubDirectory+subNames[i]+" has been overwritten. " +
-							"Subtreatments may not be up to date","Dataset.processImage");
+					console.warn('The content of directory '+newSubDirectory+subNames[i]+' has been overwritten. ' +
+							'Subtreatments may not be up to date','Dataset.processImage');
 				}
 			}
 		}
 		
-		console.info("Treatment of each image");
+		console.info('Treatment of each image');
 		
 		for(var i=0; i<data.length; i++) {
 			
-			var initialPath = data[i]["data"][version]["filename"];
-			var filename = initialPath.replace(/.*\//,"");
-			var newPath = newDirectory+"/"+filename;
+			var initialPath = data[i]['data'][version]['filename'];
+			var filename = initialPath.replace(/.*\//,'');
+			var newPath = newDirectory+'/'+filename;
 			
 			var image=IJ.load(initialPath);
 
 			switch(method){
-			case "resize":
+			case 'resize':
 				image.resize(processOption,options);
 				saveEntry(data,image,newPath,newSubDirectory);
 				break;
-			case "crop":
+			case 'crop':
 				image.crop(options.x||0, options.y||0, options.width||1, options.height||1);
 				saveEntry(data,image,newPath,newSubDirectory);
 				break;
-			case "filter":
+			case 'filter':
 				if(processOption==Dataset.IJFilter.RGB) {
 					var rgb = image.splitRGB();
-					saveEntry(data, rgb[0], newDirectory+"Red/"+filename, newSubDirectory+"Red");
-					saveEntry(data, rgb[1], newDirectory+"Green/"+filename, newSubDirectory+"Green");
-					saveEntry(data, rgb[2], newDirectory+"Blue/"+filename, newSubDirectory+"Blue");
+					saveEntry(data, rgb[0], newDirectory+'Red/'+filename, newSubDirectory+'Red');
+					saveEntry(data, rgb[1], newDirectory+'Green/'+filename, newSubDirectory+'Green');
+					saveEntry(data, rgb[2], newDirectory+'Blue/'+filename, newSubDirectory+'Blue');
 				}
 				else if(processOption==Dataset.IJFilter.HSB) {
 					var hsb = image.splitHSB();
-					saveEntry(data, hsb[0], newDirectory+"Hue/"+filename, newSubDirectory+"Hue");
-					saveEntry(data, hsb[1], newDirectory+"Saturation/"+filename, newSubDirectory+"Saturation");
-					saveEntry(data, hsb[2], newDirectory+"Brightness/"+filename, newSubDirectory+"Brightness");
+					saveEntry(data, hsb[0], newDirectory+'Hue/'+filename, newSubDirectory+'Hue');
+					saveEntry(data, hsb[1], newDirectory+'Saturation/'+filename, newSubDirectory+'Saturation');
+					saveEntry(data, hsb[2], newDirectory+'Brightness/'+filename, newSubDirectory+'Brightness');
 				}
 				else if(processOption==Dataset.IJFilter.GREY) {
 					image.grey();
@@ -446,17 +446,17 @@ Dataset = {
 					image.edge();
 					saveEntry(data,image,newPath,newSubDirectory);
 				}
-				else throw "The requested filter does not exist";
+				else throw 'The requested filter does not exist';
 				break;
-			case "histogram":
+			case 'histogram':
 				var histogram = image.histogram();
 
-				newPath = newPath.replace(/\.[a-zA-Z]+$/,".array");
+				newPath = newPath.replace(/\.[a-zA-Z]+$/,'.array');
 				File.saveJSON(newPath,histogram);
-				data[i]["data"][newSubDirectory]={filename: newPath, viewFile: Visualizer.getTypedURL(newPath), histogram:histogram};
+				data[i]['data'][newSubDirectory]={filename: newPath, viewFile: Visualizer.getTypedURL(newPath), histogram:histogram};
 				break;
 				
-			case "split":
+			case 'split':
 				if(image.getNChannels()==1) image.rgb();
 				var mask = image.createMask(maskOptions);
 				
@@ -465,73 +465,73 @@ Dataset = {
 				var split = image.split(rois);
 				var splitMask = mask.split(rois);
 				
-				newPath = newPath.replace(/\.[a-zA-Z]+$/,".png");
+				newPath = newPath.replace(/\.[a-zA-Z]+$/,'.png');
 				if(transparent) split[splitIndex].saveTransparentPng(newPath, splitMask[splitIndex]);
 				else split[splitIndex].save(newPath);
-				data[i]["data"][newSubDirectory]={filename: newPath, viewFile: Visualizer.getTypedURL(newPath)};
+				data[i]['data'][newSubDirectory]={filename: newPath, viewFile: Visualizer.getTypedURL(newPath)};
 				break;
 			}
 		}
-		console.info("... end of Dataset.processImage");
+		console.info('... end of Dataset.processImage');
 	},
 	
 	processSpectrum: function(dataCollection,method,parameters) {
 		
-		console.info("Starting Dataset.processSpectrum ...");
+		console.info('Starting Dataset.processSpectrum ...');
 		
 		var data = dataCollection.data;
 		var version=parameters[0];
 		var destination=parameters[1];
 		var processOption=parameters[2];
 		var options=parameters[3]||{};
-		if(method=="fill" || method=="getArray")
+		if(method=='fill' || method=='getArray')
 			options=processOption||{};
 		
 		var allowedChars = /^[a-zA-Z0-9-]+$/;
-		if(!allowedChars.test(destination)) throw "The destination name contains forbidden characters. Allowed characters are : a-z, A-z, 0-9 and -";
-		if(!data[0]["data"][version]) throw "The specified version ("+version+") is not loaded or does not exist";
-		if(dataCollection.getDataType(version) != "spectrum") throw "This function can only be used on spectra";
+		if(!allowedChars.test(destination)) throw 'The destination name contains forbidden characters. Allowed characters are : a-z, A-z, 0-9 and -';
+		if(!data[0]['data'][version]) throw 'The specified version ('+version+') is not loaded or does not exist';
+		if(dataCollection.getDataType(version) != 'spectrum') throw 'This function can only be used on spectra';
 		
 		var saveEntry = function(data, spectrum, newPath, newVersion){
 			spectrum.save(newPath);
-			data[i]["data"][newVersion]={filename: newPath, viewFile: Visualizer.getTypedURL(newPath)};
+			data[i]['data'][newVersion]={filename: newPath, viewFile: Visualizer.getTypedURL(newPath)};
 		};
 		
-		console.info("Treatment of the folder names");
+		console.info('Treatment of the folder names');
 		
-		var initialDirectory=data[0]["data"][version]["filename"].replace(/\/[^\/]+$/,"");
-		var initialSubDirectory=initialDirectory.replace(/.*\//,"");
+		var initialDirectory=data[0]['data'][version]['filename'].replace(/\/[^\/]+$/,'');
+		var initialSubDirectory=initialDirectory.replace(/.*\//,'');
 		
-		var newSubDirectory="error";
-		if(initialSubDirectory=="original")
+		var newSubDirectory='error';
+		if(initialSubDirectory=='original')
 			newSubDirectory=destination;
 		else
-			newSubDirectory=initialSubDirectory+"_"+destination;
+			newSubDirectory=initialSubDirectory+'_'+destination;
 		
 		var newDirectory = initialDirectory.replace(/[^\/]+$/,newSubDirectory);
 		
 		if(File.exists(newDirectory)==2) {
 			if(!options.overwrite)
-				throw ("The directory "+newSubDirectory+" already exists. Choose another name or " +
-						"make the overwrite option true.");
+				throw ('The directory '+newSubDirectory+' already exists. Choose another name or ' +
+						'make the overwrite option true.');
 			else {
 				var folderContent = File.dir(newDirectory);
 				for(var j=0; j<folderContent.length; j++) {
 					File.remove(folderContent[j]);
 				}
 				File.remove(newDirectory);
-				console.warn("The content of directory "+newSubDirectory+" has been overwritten. " +
-						"Subtreatments may not be up to date","Dataset.processSpectrum");
+				console.warn('The content of directory '+newSubDirectory+' has been overwritten. ' +
+						'Subtreatments may not be up to date','Dataset.processSpectrum');
 			}
 		}
 
-		console.info("Treatment of each spectrum");
+		console.info('Treatment of each spectrum');
 		
 		for(var i=0; i<data.length; i++) {
 			
-			var initialPath = data[i]["data"][version]["filename"];
-			var filename = initialPath.replace(/.*\//,"");
-			var newPath = newDirectory+"/"+filename;
+			var initialPath = data[i]['data'][version]['filename'];
+			var filename = initialPath.replace(/.*\//,'');
+			var newPath = newDirectory+'/'+filename;
 			
 			var spectrum=SD.load(initialPath);
 			
@@ -542,7 +542,7 @@ Dataset = {
 			var to = options.to || specMax;
 			
 			switch(method){
-			case "filter":
+			case 'filter':
 				if(processOption==Dataset.SDFilter.SNV) {
 					spectrum.SNVFilter();
 					saveEntry(data, spectrum, newPath, newSubDirectory);
@@ -574,14 +574,14 @@ Dataset = {
 					spectrum.correlationFilter([-1,1]);
 					saveEntry(data, spectrum, newPath, newSubDirectory);
 				}
-				else throw "The requested filter does not exist";
+				else throw 'The requested filter does not exist';
 				break;
-			case "correlation":
-				if(!(processOption instanceof Array)) throw "The correlation option has to be an array of numbers";
+			case 'correlation':
+				if(!(processOption instanceof Array)) throw 'The correlation option has to be an array of numbers';
 				spectrum.correlationFilter(processOption);
 				saveEntry(data, spectrum, newPath, newSubDirectory);
 				break;
-			case "fill":
+			case 'fill':
 				var value = options.value || 0;
 				if(value == -1)
 					spectrum.suppressZone(from,to);
@@ -589,21 +589,21 @@ Dataset = {
 					spectrum.fillWith(from,to,value);
 				saveEntry(data, spectrum, newPath, newSubDirectory);
 				break;
-			case "select":
+			case 'select':
 				spectrum.suppressZone(specMin, from);
 				spectrum.suppressZone(to, specMax);
 				saveEntry(data, spectrum, newPath, newSubDirectory);
 				break;
-			case "getArray":
+			case 'getArray':
 				var nbPoints = options.nbPoints || 	spectrum.getNbPoints();
 				var array = spectrum.getVector(from,to,nbPoints);
-				newPath = newPath.replace(/\.[a-zA-Z]+$/,".array");
+				newPath = newPath.replace(/\.[a-zA-Z]+$/,'.array');
 				File.saveJSON(newPath,array);
-				data[i]["data"][newSubDirectory]={filename: newPath, viewFile: Visualizer.getTypedURL(newPath)};
+				data[i]['data'][newSubDirectory]={filename: newPath, viewFile: Visualizer.getTypedURL(newPath)};
 				break;
 			}
 		}
-		console.info("... end of Dataset.processSpectrum");
+		console.info('... end of Dataset.processSpectrum');
 	}
 };
 
@@ -630,14 +630,14 @@ Dataset.DataCollection.prototype.toVisualizer = function(exportName) {
 *
 * @param	version:string		Version of the data to process
 * @param	destination:string	Destination of the processed result
-* @param	size:string			New image size in the format "widthxheight" or "percentage%"
+* @param	size:string			New image size in the format 'widthxheight' or 'percentage%'
 * @param	options:+Object		Object containing the options
 *
 * @option	overwrite	Overwrite the destination folder if it already exists (default: false)
 * 
 **/
 Dataset.DataCollection.prototype.imageResize = function(version, destination, size, options) {
-	Dataset.processImage(this, "resize", arguments);
+	Dataset.processImage(this, 'resize', arguments);
 };
 
 /**
@@ -651,10 +651,10 @@ Dataset.DataCollection.prototype.imageResize = function(version, destination, si
 * 
 * @option	overwrite	Overwrite the destination folder if it already exists (default: false)
 * 
-* @example	dataset1.imageFilter("resized","edge",Dataset.IJFilter.EDGE)
+* @example	dataset1.imageFilter('resized','edge',Dataset.IJFilter.EDGE)
 **/
 Dataset.DataCollection.prototype.imageFilter = function(version, destination, filterFunction, options) {
-	Dataset.processImage(this, "filter", arguments);
+	Dataset.processImage(this, 'filter', arguments);
 };
 
 /**
@@ -669,7 +669,7 @@ Dataset.DataCollection.prototype.imageFilter = function(version, destination, fi
 *
 **/
 Dataset.DataCollection.prototype.imageHistogram = function(version, destination, options) {
-	Dataset.processImage(this, "histogram", arguments);
+	Dataset.processImage(this, 'histogram', arguments);
 };
 
 /**
@@ -688,7 +688,7 @@ Dataset.DataCollection.prototype.imageHistogram = function(version, destination,
  * @option	transparent	Save as a transparent PNG (default: false)
  */
 Dataset.DataCollection.prototype.imageSplit = function(version, destination, imageFilter, options) {
-	Dataset.processImage(this, "split", arguments);
+	Dataset.processImage(this, 'split', arguments);
 };
 
 /**
@@ -707,7 +707,7 @@ Dataset.DataCollection.prototype.imageSplit = function(version, destination, ima
  * 
  */
 Dataset.DataCollection.prototype.imageCrop = function(version, destination, options) {
-	Dataset.processImage(this, "crop", arguments);
+	Dataset.processImage(this, 'crop', arguments);
 };
 
 /**
@@ -731,11 +731,11 @@ Dataset.DataCollection.prototype.imageSplitTest = function(version, imageFilter,
 	var transparent = options.transparent ? true : false;
 	
 	var maskOptions = {};
-	if(typeof options.darkBackground == "boolean"){
+	if(typeof options.darkBackground == 'boolean'){
 		if(options.darkBackground) maskOptions.darkBackground = true;
 		else maskOptions.darkBackground = false;
 	}
-	if(imageFilter!="none") maskOptions.imageFilter = imageFilter;
+	if(imageFilter!='none') maskOptions.imageFilter = imageFilter;
 	if(options.maskColor) maskOptions.maskColor = options.maskColor;
 	if(options.method) maskOptions.method = options.method;
 	
@@ -755,7 +755,7 @@ Dataset.DataCollection.prototype.imageSplitTest = function(version, imageFilter,
 		var result = {};
 		results.push(result);
 
-		var imagePath = this.data[i]["data"][version]["filename"];
+		var imagePath = this.data[i]['data'][version]['filename'];
 		var image = IJ.load(imagePath);
 		//if(image.getNChannels()==1) image.rgb();
 
@@ -767,24 +767,24 @@ Dataset.DataCollection.prototype.imageSplitTest = function(version, imageFilter,
 		var split = image.split(rois);
 		var splitMask = maskImg.split(rois);
 		
-		var imgName = imagePath.replace(/^.*\//,"");
-		var tmpDir = this.source+"/_split/"+imgName+"/";
+		var imgName = imagePath.replace(/^.*\//,'');
+		var tmpDir = this.source+'/_split/'+imgName+'/';
 		result.name=imgName;
 		
 		var paintedMask = image.paintMask(maskImg);
-		paintedMask.save(tmpDir+"paintedMask.jpg");
-		result.paintedMask = Visualizer.getTypedURL(tmpDir+"paintedMask.jpg");
+		paintedMask.save(tmpDir+'paintedMask.jpg');
+		result.paintedMask = Visualizer.getTypedURL(tmpDir+'paintedMask.jpg');
 		
 		var paintedRois = image.paintRois(rois);
-		paintedRois.save(tmpDir+"paintedRois.jpg");
-		result.paintedRois = Visualizer.getTypedURL(tmpDir+"paintedRois.jpg");
+		paintedRois.save(tmpDir+'paintedRois.jpg');
+		result.paintedRois = Visualizer.getTypedURL(tmpDir+'paintedRois.jpg');
 		
 		result.images=[];
 		for(var j=0; j<split.length; j++){
-			var saveName = tmpDir+"split/"+j+".png";
+			var saveName = tmpDir+'split/'+j+'.png';
 			if(transparent) split[j].saveTransparentPng(saveName,splitMask[j]);
 			else split[j].save(saveName);
-			result.images.push({label:"Split #"+j, value:Visualizer.getTypedURL(saveName)});
+			result.images.push({label:'Split #'+j, value:Visualizer.getTypedURL(saveName)});
 		}	
 	}
 	return results;
@@ -801,10 +801,10 @@ Dataset.DataCollection.prototype.imageSplitTest = function(version, imageFilter,
 * 
 * @option	overwrite	Overwrite the destination folder if it already exists (default: false)
 * 
-* @example	dataset1.spectrumFilter("original", "snv", Dataset.SDFilter.SNV)
+* @example	dataset1.spectrumFilter('original', 'snv', Dataset.SDFilter.SNV)
 **/
 Dataset.DataCollection.prototype.spectrumFilter = function(version, destination, filterFunction, options) {
-	Dataset.processSpectrum(this, "filter", arguments);
+	Dataset.processSpectrum(this, 'filter', arguments);
 };
 
 /**
@@ -818,10 +818,10 @@ Dataset.DataCollection.prototype.spectrumFilter = function(version, destination,
 * 
 * @option	overwrite	Overwrite the destination folder if it already exists (default: false)
 * 
-* @example	dataset1.spectrumCorrelation("original", "corr1", [1,2,1])
+* @example	dataset1.spectrumCorrelation('original', 'corr1', [1,2,1])
 **/
 Dataset.DataCollection.prototype.spectrumCorrelation = function(version, destination, correlation, options) {
-	Dataset.processSpectrum(this, "correlation", arguments);
+	Dataset.processSpectrum(this, 'correlation', arguments);
 };
 
 /**
@@ -837,10 +837,10 @@ Dataset.DataCollection.prototype.spectrumCorrelation = function(version, destina
 * @option	value	Value used to fill the region (default : 0). If value is set to -1, the region is suppressed
 * @option	overwrite	Overwrite the destination folder if it already exists (default: false)
 * 
-* @example	dataset1.spectrumFillRegion("snv", "filled", {from:1400, to:1800})
+* @example	dataset1.spectrumFillRegion('snv', 'filled', {from:1400, to:1800})
 **/
 Dataset.DataCollection.prototype.spectrumFillRegion = function(version, destination, options) {
-	Dataset.processSpectrum(this, "fill", arguments);
+	Dataset.processSpectrum(this, 'fill', arguments);
 };
 
 /**
@@ -855,10 +855,10 @@ Dataset.DataCollection.prototype.spectrumFillRegion = function(version, destinat
 * @option	to	End of the region (default : highest x)
 * @option	overwrite	Overwrite the destination folder if it already exists (default: false)
 * 
-* @example	dataset1.spectrumSelectRegion("snv", "selected", {from:800, to:1800})
+* @example	dataset1.spectrumSelectRegion('snv', 'selected', {from:800, to:1800})
 **/
 Dataset.DataCollection.prototype.spectrumFillRegion = function(version, destination, options) {
-	Dataset.processSpectrum(this, "select", arguments);
+	Dataset.processSpectrum(this, 'select', arguments);
 };
 
 /**
@@ -876,7 +876,7 @@ Dataset.DataCollection.prototype.spectrumFillRegion = function(version, destinat
 * 
 **/
 Dataset.DataCollection.prototype.spectrumGetArray = function(version, destination, options) {
-	Dataset.processSpectrum(this, "getArray", arguments);
+	Dataset.processSpectrum(this, 'getArray', arguments);
 };
 
 /**
@@ -885,16 +885,16 @@ Dataset.DataCollection.prototype.spectrumGetArray = function(version, destinatio
 * 
 * @param	sample:string	ID of the sample to remove or array of IDs
 * 
-* @example	dataset1.removeSample("0001_02")
+* @example	dataset1.removeSample('0001_02')
 **/
 Dataset.DataCollection.prototype.removeSample = function(sample) {
 	var samples=[];
-	if(typeof sample == "string")
+	if(typeof sample == 'string')
 		samples = [sample];
 	else if(sample instanceof Array)
 		samples = sample;
 	else
-		console.warn("Dataset.removeSample: parameter sample has to be a string or an array. Nothing has been removed");
+		console.warn('Dataset.removeSample: parameter sample has to be a string or an array. Nothing has been removed');
 	for(var i=0; i<samples.length; i++){
 		for(var j=0; j<this.data.length; j++){
 			if(this.data[j].id == samples[i]){
@@ -916,21 +916,21 @@ Dataset.DataCollection.prototype.removeSample = function(sample) {
 * 
 * @return	+Matrix
 * 
-* @example	data.getSimilarityMatrix("split50",Distance.Function.EUCLIDEAN_DISTANCE)
+* @example	data.getSimilarityMatrix('split50',Distance.Function.EUCLIDEAN_DISTANCE)
 **/
 Dataset.DataCollection.prototype.getSimilarityMatrix = function(version, similarityFunction, options) {
-	console.info("Starting Dataset.getSimilarityMatrix...");
+	console.info('Starting Dataset.getSimilarityMatrix...');
 	
 	options = options || {};
 	
 	var comparator;
-	if(typeof similarityFunction == "string") {
+	if(typeof similarityFunction == 'string') {
 		comparator = new DM.Comparator(similarityFunction, options);
 	}
-	else if(typeof similarityFunction == "function") {
+	else if(typeof similarityFunction == 'function') {
 		comparator={compare:similarityFunction, getMap:function(a){return a;}}; // Simulate comparator object
 	}
-	else throw "similarityFunction must be a function";
+	else throw 'similarityFunction must be a function';
 	
 	var filter;
 	if(options.filter) {
@@ -944,19 +944,19 @@ Dataset.DataCollection.prototype.getSimilarityMatrix = function(version, similar
 	
 	var dataType = this.getDataType(version);
 	switch(dataType) {
-	/*case "image":
+	/*case 'image':
 		var load = function(file) {
 			return IJ.load(file);
 		};
 		break;*/
-	case "array":
+	case 'array':
 		var load = function(file) {
 			var fileContent=filter.apply(File.loadJSON(file));
 			return comparator.getMap(fileContent);
 		};
 		break;
 	default:
-		throw "The datatype ("+dataType+") can not be used to compute similarities";
+		throw 'The datatype ('+dataType+') can not be used to compute similarities';
 	}
 	
 	//Load all the data based on the filename found in the DataCollection object
@@ -964,23 +964,23 @@ Dataset.DataCollection.prototype.getSimilarityMatrix = function(version, similar
 	var loadedFiles = [];
 	var similarity = [];
 	var len=this.data.length;
-	console.info("Loading data (version: "+version+")");
+	console.info('Loading data (version: '+version+')');
 	for(var i=0; i<len; i++) {
-		var loadedFile = load(this.data[i]["data"][version]["filename"]);
+		var loadedFile = load(this.data[i]['data'][version]['filename']);
 		loadedFiles.push(loadedFile);
 		
 		similarity[i]=[];
 	}
-	console.info("Computing similarities ("+((len*len/2)-(len/2))+" pairs)");
+	console.info('Computing similarities ('+((len*len/2)-(len/2))+' pairs)');
 	//Calculation of the similarities
 	for(var i=0; i<len; i++) {
-		console.info("Processing row "+(i+1)+"/"+len);
+		console.info('Processing row '+(i+1)+'/'+len);
 		for(var j=i; j<len; j++) {
 			similarity[i][j]=comparator.compare(loadedFiles[i],loadedFiles[j]);
 			similarity[j][i]=similarity[i][j];
 		}
 	}
-	console.info("...end of Dataset.getSimilarityMatrix");
+	console.info('...end of Dataset.getSimilarityMatrix');
 	return new Matrix(similarity);
 };
 
@@ -991,7 +991,7 @@ Dataset.DataCollection.prototype.getSimilarityMatrix = function(version, similar
 * @param	options:+Object	Object containing the options
 * 
 * @option	metadataField	Name of the metadata field where the category is found
-* @option	filterFunction	Function that will match the category from the filename (default : only keeps what's before first "_") or metadataField (if specified)
+* @option	filterFunction	Function that will match the category from the filename (default : only keeps what's before first '_') or metadataField (if specified)
 * 
 * @return	+Matrix
 **/
@@ -1002,7 +1002,7 @@ Dataset.DataCollection.prototype.getTargetMatrix = function(options) {
 	var metadataField = options.metadataField || false;
 	var filterFunction = options.filterFunction || function(name){
 		var reg=/_.*$/;
-		return name.replace(reg,"");
+		return name.replace(reg,'');
 	};
 	
 	var names=[];
@@ -1012,7 +1012,7 @@ Dataset.DataCollection.prototype.getTargetMatrix = function(options) {
 		else {
 			var keys = [];
 			for(var k in this.data[i].data) keys.push(k);
-			names.push(this.data[i].data[keys[0]].filename.replace(/.*\/(.*)\.[a-zA-Z0-9]+$/,"$1"));
+			names.push(this.data[i].data[keys[0]].filename.replace(/.*\/(.*)\.[a-zA-Z0-9]+$/,'$1'));
 		}
 			
 	}
@@ -1049,23 +1049,23 @@ Dataset.DataCollection.prototype.getTargetMatrix = function(options) {
 **/
 Dataset.DataCollection.prototype.getDataType = function(version) {
 	var file = this.data[0].data[version].filename;
-	var extension = file.replace(/.*\./,"").toLowerCase();
+	var extension = file.replace(/.*\./,'').toLowerCase();
 	
 	switch(extension) {
-	case "jpg":
-	case "jpeg":
-	case "png":
-	case "tif":
-	case "tiff":
-	case "gif":
-		return "image";
-	case "jdx":
-	case "dx":
-		return "spectrum";
-	case "array":
-		return "array";
+	case 'jpg':
+	case 'jpeg':
+	case 'png':
+	case 'tif':
+	case 'tiff':
+	case 'gif':
+		return 'image';
+	case 'jdx':
+	case 'dx':
+		return 'spectrum';
+	case 'array':
+		return 'array';
 	default:
-		return "unknown";
+		return 'unknown';
 	}
 };
 
@@ -1075,10 +1075,10 @@ Dataset.DataCollection.prototype.getDataType = function(version) {
 * 
 * @param	filename:string	Name of the data file
 * 
-* @example	dataset.save("treatments1");
+* @example	dataset.save('treatments1');
 **/
 Dataset.DataCollection.prototype.save = function(filename) {
-	File.saveJSON(this.source+"/_json/"+filename+".json",JSON.stringify({data:this.data,source:this.source}));
+	File.saveJSON(this.source+'/_json/'+filename+'.json',JSON.stringify({data:this.data,source:this.source}));
 };
 
 /**
@@ -1093,13 +1093,13 @@ Dataset.DataCollection.prototype.save = function(filename) {
 * @return +Object
 **/
 Dataset.DataCollection.prototype.pca = function(version, options) {
-	console.info("Starting Dataset.pca...");
+	console.info('Starting Dataset.pca...');
 	
-	if(this.getDataType(version) != "array") throw "PCA can only be applied on arrays";
+	if(this.getDataType(version) != 'array') throw 'PCA can only be applied on arrays';
 	options = options ? options : {};
 	var nPC = options.nPC || 2;
 	
-	console.info("Loading the data (version: "+version+")");
+	console.info('Loading the data (version: '+version+')');
 	
 	var arrays = [];
 	for(var i=0; i<this.data.length; i++){
@@ -1111,7 +1111,7 @@ Dataset.DataCollection.prototype.pca = function(version, options) {
 		'nPC': nPC
 	};
 	
-	console.info("Computing PCA");
+	console.info('Computing PCA');
 	var pca = DataMining.filter.pca(arrays,pca_options);
 	if(options.pca2)
 		return pca;
@@ -1121,16 +1121,16 @@ Dataset.DataCollection.prototype.pca = function(version, options) {
 	newPCA.data=this.data;
 	newPCA.variance=pca.model.variance;
 	for(var i=1; i<=nPC; i++){
-		newPCA["PC"+i]=[];
+		newPCA['PC'+i]=[];
 	}
 	
 	for(var i=0; i<pca.data.length; i++){
 		for(var j=1;j<=nPC;j++){
-			newPCA["PC"+j].push(pca.data[i][j-1]);
+			newPCA['PC'+j].push(pca.data[i][j-1]);
 		}
 	}*/
 	
-	//console.info("...end of Dataset.pca");
+	//console.info('...end of Dataset.pca');
 	return pca;
 };
 
@@ -1153,9 +1153,9 @@ Dataset.DataCollection.prototype.pca2 = function(version, options) {
 		  entry.w=Math.sqrt(D[0][0])*2;
 		  entry.h=Math.sqrt(D[1][1])*2;
 		  
-		  entry.c="#"+hex_md5(key).substring(0,6);
+		  entry.c='#'+hex_md5(key).substring(0,6);
 		  entry.lc=entry.c;
-		  entry.n="none";
+		  entry.n='none';
 		  entry.a=Math.atan(V[0][1]/V[0][0])*180/Math.PI;
 		  //The determinant will tell us if there is an axe reflection.
 		  entry.a*=-(V[0][0]*V[1][1]-V[1][0]*V[0][1]);
@@ -1180,13 +1180,13 @@ Dataset.DataCollection.prototype.pca2 = function(version, options) {
 		elements[i].a=0;
 		elements[i].l=info[i].id;
 		elements[i].lc=elements[i].c;
-		elements[i].n="none";
+		elements[i].n='none';
 		elements[i].jcamp=info[i].data[version].viewFile;
 		info[i].i=i;
 	}
 	var serie = {};
-	serie.label="PCA of "+version;
-	serie.category="Spectra";
+	serie.label='PCA of '+version;
+	serie.category='Spectra';
 	serie.data=elements;
 	series.push(serie);
 	
@@ -1204,8 +1204,8 @@ Dataset.DataCollection.prototype.pca2 = function(version, options) {
 	
 
 	var serieCC={};
-	serieCC.label="Batches";
-	serieCC.category="Components";
+	serieCC.label='Batches';
+	serieCC.category='Components';
 	serieCC.data=family;
 	series.push(serieCC);
 	
@@ -1213,7 +1213,7 @@ Dataset.DataCollection.prototype.pca2 = function(version, options) {
 	scatter.series=series;
 	scatter.xAxis={'label':'My X axis','minValue':0,'maxValue':1};
 	scatter.yAxis={'label':'My Y axis'};
-	scatter.title="My graph";
+	scatter.title='My graph';
 	scatter.minX=0;
 	scatter.maxX=100;
 	scatter.minY=0;
@@ -1221,7 +1221,7 @@ Dataset.DataCollection.prototype.pca2 = function(version, options) {
 
 	jexport('spectra',elements);
 	jexport('components',family);
-	jexport('scatter',{type:"loading", value:scatter});
+	jexport('scatter',{type:'loading', value:scatter});
 	
 };
 
@@ -1230,7 +1230,7 @@ Dataset.DataCollection.prototype.pca2 = function(version, options) {
 * Performs a Hierarchical clustering on the given version
 * 
 * @param	version:string		Version of the data
-* @param	DistanceFunction	Either a custom function or the name of a predefined function
+* @param	distanceFunction	Either a custom function or the name of a predefined function
 * @param	options:+Object		Object containing the options
 * 
 * @option	image	Version of the data that contains a displayable image for the nodes
@@ -1240,10 +1240,10 @@ Dataset.DataCollection.prototype.pca2 = function(version, options) {
 **/
 Dataset.DataCollection.prototype.cluster = function(version, distanceFunction ,options) {
 	
-	console.info("Starting Dataset.cluster...");
+	console.info('Starting Dataset.cluster...');
 	options = options ? options : {};
 	
-	console.info("Creating similarity matrix");
+	console.info('Creating similarity matrix');
 	var similarity;
 	if(options.similarityMatrix && options.similarityMatrix instanceof Matrix){
 		similarity = options.similarityMatrix;
@@ -1254,31 +1254,31 @@ Dataset.DataCollection.prototype.cluster = function(version, distanceFunction ,o
 	
 	var data = this.data;
 	
-	console.info("Creating labels for dendrogram");
+	console.info('Creating labels for dendrogram');
 	var labels = [];
 	for(var i=0; i<data.length; i++){
 		labels.push({
 			element: i,
 			label: data[i].id,
 			data: data[i],
-			"image": options.image ? data[i].data[options.image].viewFile : null,
-			"$height": 10,
-			"$width": 10,
-			"$dim": 20,
-			"$color": data[i].color,
-			"$label-size":"20px"
+			'image': options.image ? data[i].data[options.image].viewFile : null,
+			'$height': 10,
+			'$width': 10,
+			'$dim': 20,
+			'$color': data[i].color,
+			'$label-size':'20px'
 		});
 	}
 	
-	console.info("Creating dendrogram.");
-	var tree = {type:"tree",value:Distance.clustering(similarity.toArray2D(),labels)};
+	console.info('Creating dendrogram.');
+	var tree = {type:'tree',value:Distance.clustering(similarity.toArray2D(),labels)};
 	
-	console.info("...end of Dataset.cluster");
+	console.info('...end of Dataset.cluster');
 	return tree;
 };
 
 Dataset.DataCollection.prototype.getBatches = function(){
-	if(this.data[0].hasOwnProperty("batchID")){
+	if(this.data[0].hasOwnProperty('batchID')){
 		this.batches = {};
 		for(var i=0; i<this.data.length; i++){
 			var batchID=this.data[i].batchID;
@@ -1357,8 +1357,7 @@ Dataset.SDFilter = {
 	 * @property	LOG number
 	 * Calculates the base 10 logarithm of each point of the spectrum.<br>The spectrum is automatically shifted before so that its minimum is 1
 	 */
-	LOG : 7,
-	
+	LOG : 7
 };
 
 /**
