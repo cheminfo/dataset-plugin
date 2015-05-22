@@ -164,7 +164,7 @@ var Dataset = (function () {
                     }
                 }
                 if (newVersion.length > 0) version = newVersion;
-                else throw 'No version found with the RegExp ' + options.version.toString();
+                else throw new Error('No version found with the RegExp ' + options.version.toString());
             }
             else if ((options.version instanceof Array) && (options.version.length == 0)) {
                 var versions = File.dir(source, {filter: /^[^_]{1}.*/});
@@ -176,8 +176,8 @@ var Dataset = (function () {
                 }
                 version = newVersion;
             }
-            else if (!(options.version instanceof Array)) throw 'Option version should be a string, a regular ' +
-            'expression or an array';
+            else if (!(options.version instanceof Array)) throw new Error('Option version should be a string, a regular ' +
+            'expression or an array');
             else version = options.version;
         }
 
@@ -212,14 +212,14 @@ var Dataset = (function () {
                 }
             };
         if (typeof filenameFilter != 'function') {
-            throw new TypeError('Option filenameFilter must be a function');
+            throw new Error(new TypeError('Option filenameFilter must be a function'));
         }
 
         console.info('Treatment of the limit/subSet options');
         var subSet = '';
         if (options.subSet) {
             if ((typeof options.subSet != 'string') && !(options.subSet instanceof RegExp))
-                throw 'subSet option must be a string or a regular expression';
+                throw new Error(new Error('subSet option must be a string or a regular expression'));
             else
                 subSet = options.subSet;
         }
@@ -240,7 +240,7 @@ var Dataset = (function () {
         }
 
         if (batchDescription.source === 'metadata' && (typeof batchDescription.column !== 'string'))
-            throw 'Missing column property in the batchDescription object';
+            throw new Error(new Error('Missing column property in the batchDescription object'));
 
         /* ********************************** */
         /* ************** CODE ************** */
@@ -251,7 +251,7 @@ var Dataset = (function () {
         for (var i = 0; i < version.length; i++) {
             var files = File.dir(source + '/' + version[i], {filter: subSet}).sort();
 
-            if (files.length == 0) throw 'Directory ' + source + '/' + version[i] + ' is empty or does not exist';
+            if (files.length == 0) throw new Error('Directory ' + source + '/' + version[i] + ' is empty or does not exist');
             if (limit > 0) files = files.slice(0, limit);
             folders[version[i]] = files;
         }
@@ -263,10 +263,10 @@ var Dataset = (function () {
             if (abc == version[0])
                 continue;
             if (folders[version[0]].length > folders[abc].length)
-                throw 'Problem when loading the data : selected versions (' + version[0] + ' & ' + abc + ') do not contain the same amount of data';
+                throw new Error('Problem when loading the data : selected versions (' + version[0] + ' & ' + abc + ') do not contain the same amount of data');
             for (var i = 0; i < folders[version[0]].length; i++) {
                 if (folders[version[0]][i].replace(abcReg, '$1') != folders[abc][i].replace(abcReg, '$1'))
-                    throw 'Problem when loading the data : selected versions (' + version[0] + ' & ' + abc + ') do not contain the same data';
+                    throw new Error('Problem when loading the data : selected versions (' + version[0] + ' & ' + abc + ') do not contain the same data');
             }
         }
 
@@ -646,7 +646,7 @@ var Dataset = (function () {
                 }
             }; // Simulate comparator object
         }
-        else throw 'similarityFunction must be a function';
+        else throw new Error(new Error('similarityFunction must be a function'));
 
         var filter;
         if (options.filter) {
@@ -674,7 +674,7 @@ var Dataset = (function () {
                 };
                 break;
             default:
-                throw 'The datatype (' + dataType + ') can not be used to compute similarities';
+                throw new Error('The datatype (' + dataType + ') can not be used to compute similarities');
         }
 
         //Load all the data based on the filename found in the DataCollection object
@@ -815,7 +815,7 @@ var Dataset = (function () {
     DataCollection.prototype.pca = function (version, options) {
         console.info('Starting Dataset.pca...');
 
-        if (this.getDataType(version) != 'array') throw 'PCA can only be applied on arrays';
+        if (this.getDataType(version) != 'array') throw new Error(new Error('PCA can only be applied on arrays'));
         options = options ? options : {};
         var nPC = options.nPC || 2;
 
@@ -1098,9 +1098,9 @@ var Dataset = (function () {
         }
 
         var allowedChars = /^[a-zA-Z0-9-]+$/;
-        if (!allowedChars.test(destination)) throw 'The destination name contains forbidden characters. Allowed characters are : a-z, A-z, 0-9 and -';
-        if (!data[0]['data'][version]) throw 'The specified version (' + version + ') is not loaded or does not exist';
-        if (this.getDataType(version) != 'image') throw 'This function can only be used on images';
+        if (!allowedChars.test(destination)) throw new Error(new Error('The destination name contains forbidden characters. Allowed characters are : a-z, A-z, 0-9 and -'));
+        if (!data[0]['data'][version]) throw new Error('The specified version (' + version + ') is not loaded or does not exist');
+        if (this.getDataType(version) != 'image') throw new Error(new Error('This function can only be used on images'));
 
         var saveEntry = function (data, image, newPath, newVersion) {
             newPath = newPath.replace(/\.[a-zA-Z0-9]+$/, '.png');
@@ -1136,8 +1136,8 @@ var Dataset = (function () {
         for (var i = 0; i < subNames.length; i++) {
             if (File.exists(newDirectory + subNames[i]) == 2) {
                 if (!options.overwrite)
-                    throw ('The directory ' + newSubDirectory + subNames[i] + ' already exists. Choose another name or ' +
-                    'make the overwrite option true.');
+                    throw new Error(('The directory ' + newSubDirectory + subNames[i] + ' already exists. Choose another name or ' +
+                    'make the overwrite option true.'));
                 else {
                     var folderContent = File.dir(newDirectory + subNames[i]);
                     for (var j = 0; j < folderContent.length; j++) {
@@ -1198,7 +1198,7 @@ var Dataset = (function () {
                         image.edge();
                         saveEntry(data, image, newPath, newSubDirectory);
                     }
-                    else throw 'The requested filter does not exist';
+                    else throw new Error(new Error('The requested filter does not exist'));
                     break;
                 case 'histogram':
                     var histogram = image.histogram();
@@ -1247,9 +1247,9 @@ var Dataset = (function () {
             options = processOption || {};
 
         var allowedChars = /^[a-zA-Z0-9-]+$/;
-        if (!allowedChars.test(destination)) throw 'The destination name contains forbidden characters. Allowed characters are : a-z, A-z, 0-9 and -';
-        if (!data[0]['data'][version]) throw 'The specified version (' + version + ') is not loaded or does not exist';
-        if (this.getDataType(version) != 'spectrum') throw 'This function can only be used on spectra';
+        if (!allowedChars.test(destination)) throw new Error(new Error('The destination name contains forbidden characters. Allowed characters are : a-z, A-z, 0-9 and -'));
+        if (!data[0]['data'][version]) throw new Error('The specified version (' + version + ') is not loaded or does not exist');
+        if (this.getDataType(version) != 'spectrum') throw new Error(new Error('This function can only be used on spectra'));
 
         var saveEntry = function (data, spectrum, newPath, newVersion) {
             spectrum.save(newPath);
@@ -1271,8 +1271,8 @@ var Dataset = (function () {
 
         if (File.exists(newDirectory) == 2) {
             if (!options.overwrite)
-                throw ('The directory ' + newSubDirectory + ' already exists. Choose another name or ' +
-                'make the overwrite option true.');
+                throw new Error(('The directory ' + newSubDirectory + ' already exists. Choose another name or ' +
+                'make the overwrite option true.'));
             else {
                 var folderContent = File.dir(newDirectory);
                 for (var j = 0; j < folderContent.length; j++) {
@@ -1333,10 +1333,10 @@ var Dataset = (function () {
                         spectrum.correlationFilter([-1, 1]);
                         saveEntry(data, spectrum, newPath, newSubDirectory);
                     }
-                    else throw 'The requested filter does not exist';
+                    else throw new Error(new Error('The requested filter does not exist'));
                     break;
                 case 'correlation':
-                    if (!(processOption instanceof Array)) throw 'The correlation option has to be an array of numbers';
+                    if (!(processOption instanceof Array)) throw new Error(new Error('The correlation option has to be an array of numbers'));
                     spectrum.correlationFilter(processOption);
                     saveEntry(data, spectrum, newPath, newSubDirectory);
                     break;
