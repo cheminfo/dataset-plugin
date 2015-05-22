@@ -115,7 +115,7 @@ var Dataset = (function () {
     Dataset.load = function (source, filename) {
         console.info('Loading old dataset');
         var data = File.loadJSON(source + '/_json/' + filename + '.json');
-        var dataset = new Dataset.DataCollection(data.data, data.source);
+        var dataset = new DataCollection(data.data, data.source);
         console.info('Dataset loaded with ' + dataset.data.length + ' elements.');
         return dataset;
     };
@@ -305,7 +305,7 @@ var Dataset = (function () {
         }
 
         console.info('... end of Dataset.loadData');
-        return new Dataset.DataCollection(data, source);
+        return new DataCollection(data, source);
 
     };
 
@@ -346,7 +346,7 @@ var Dataset = (function () {
      *
      **/
     DataCollection.prototype.imageResize = function (version, destination, size, options) {
-        processImage(this, 'resize', arguments);
+        processImage.call(this, 'resize', arguments);
     };
 
     /**
@@ -363,7 +363,7 @@ var Dataset = (function () {
      * @example    dataset1.imageFilter('resized','edge',Dataset.IJFilter.EDGE)
      **/
     DataCollection.prototype.imageFilter = function (version, destination, filterFunction, options) {
-        processImage(this, 'filter', arguments);
+        processImage.call(this, 'filter', arguments);
     };
 
     /**
@@ -378,7 +378,7 @@ var Dataset = (function () {
      *
      **/
     DataCollection.prototype.imageHistogram = function (version, destination, options) {
-        processImage(this, 'histogram', arguments);
+        processImage.call(this, 'histogram', arguments);
     };
 
     /**
@@ -397,7 +397,7 @@ var Dataset = (function () {
      * @option    transparent    Save as a transparent PNG (default: false)
      */
     DataCollection.prototype.imageSplit = function (version, destination, imageFilter, options) {
-        processImage(this, 'split', arguments);
+        processImage.call(this, 'split', arguments);
     };
 
     /**
@@ -416,7 +416,7 @@ var Dataset = (function () {
      *
      */
     DataCollection.prototype.imageCrop = function (version, destination, options) {
-        processImage(this, 'crop', arguments);
+        processImage.call(this, 'crop', arguments);
     };
 
     /**
@@ -513,7 +513,7 @@ var Dataset = (function () {
      * @example    dataset1.spectrumFilter('original', 'snv', Dataset.SDFilter.SNV)
      **/
     Dataset.DataCollection.prototype.spectrumFilter = function (version, destination, filterFunction, options) {
-        Dataset.processSpectrum(this, 'filter', arguments);
+        processSpectrum.call(this, 'filter', arguments);
     };
 
     /**
@@ -530,7 +530,7 @@ var Dataset = (function () {
      * @example    dataset1.spectrumCorrelation('original', 'corr1', [1,2,1])
      **/
     DataCollection.prototype.spectrumCorrelation = function (version, destination, correlation, options) {
-        processSpectrum(this, 'correlation', arguments);
+        processSpectrum.call(this, 'correlation', arguments);
     };
 
     /**
@@ -549,7 +549,7 @@ var Dataset = (function () {
      * @example    dataset1.spectrumFillRegion('snv', 'filled', {from:1400, to:1800})
      **/
     DataCollection.prototype.spectrumFillRegion = function (version, destination, options) {
-        processSpectrum(this, 'fill', arguments);
+        processSpectrum.call(this, 'fill', arguments);
     };
 
     /**
@@ -567,7 +567,7 @@ var Dataset = (function () {
      * @example    dataset1.spectrumSelectRegion('snv', 'selected', {from:800, to:1800})
      **/
     DataCollection.prototype.spectrumFillRegion = function (version, destination, options) {
-        processSpectrum(this, 'select', arguments);
+        processSpectrum.call(this, 'select', arguments);
     };
 
     /**
@@ -585,7 +585,7 @@ var Dataset = (function () {
      *
      **/
     DataCollection.prototype.spectrumGetArray = function (version, destination, options) {
-        processSpectrum(this, 'getArray', arguments);
+        processSpectrum.call(this, 'getArray', arguments);
     };
 
     /**
@@ -1036,11 +1036,11 @@ var Dataset = (function () {
         return descriptors;
     };
 
-    function processImage(dataCollection, method, parameters) {
+    function processImage(method, parameters) {
 
         console.info('Starting Dataset.processImage (method: ' + method + ') ...');
 
-        var data = dataCollection.data;
+        var data = this.data;
         var version = parameters[0];
         var destination = parameters[1];
         var processOption = parameters[2];
@@ -1077,7 +1077,7 @@ var Dataset = (function () {
         var allowedChars = /^[a-zA-Z0-9-]+$/;
         if (!allowedChars.test(destination)) throw 'The destination name contains forbidden characters. Allowed characters are : a-z, A-z, 0-9 and -';
         if (!data[0]['data'][version]) throw 'The specified version (' + version + ') is not loaded or does not exist';
-        if (dataCollection.getDataType(version) != 'image') throw 'This function can only be used on images';
+        if (this.getDataType(version) != 'image') throw 'This function can only be used on images';
 
         var saveEntry = function (data, image, newPath, newVersion) {
             newPath = newPath.replace(/\.[a-zA-Z0-9]+$/, '.png');
@@ -1211,11 +1211,11 @@ var Dataset = (function () {
         console.info('... end of Dataset.processImage');
     }
 
-    function processSpectrum(dataCollection, method, parameters) {
+    function processSpectrum(method, parameters) {
 
         console.info('Starting Dataset.processSpectrum ...');
 
-        var data = dataCollection.data;
+        var data = this.data;
         var version = parameters[0];
         var destination = parameters[1];
         var processOption = parameters[2];
@@ -1226,7 +1226,7 @@ var Dataset = (function () {
         var allowedChars = /^[a-zA-Z0-9-]+$/;
         if (!allowedChars.test(destination)) throw 'The destination name contains forbidden characters. Allowed characters are : a-z, A-z, 0-9 and -';
         if (!data[0]['data'][version]) throw 'The specified version (' + version + ') is not loaded or does not exist';
-        if (dataCollection.getDataType(version) != 'spectrum') throw 'This function can only be used on spectra';
+        if (this.getDataType(version) != 'spectrum') throw 'This function can only be used on spectra';
 
         var saveEntry = function (data, spectrum, newPath, newVersion) {
             spectrum.save(newPath);
